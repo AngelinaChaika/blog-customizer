@@ -23,12 +23,12 @@ type ArticleParamsFormProps = {
 export const ArticleParamsForm = ({
 	setArticleState,
 }: ArticleParamsFormProps) => {
-	const [state, setState] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [formState, setFormState] = useState(defaultArticleState);
 	const asideRef = useRef<HTMLElement | null>(null);
 
 	const handleAction = () => {
-		setState((prevState) => !prevState);
+		setIsFormOpen((prevState) => !prevState);
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,6 +42,9 @@ export const ArticleParamsForm = ({
 	};
 
 	useEffect(() => {
+		if (!isFormOpen) {
+			return;
+		}
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				asideRef.current &&
@@ -56,16 +59,16 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [state]);
+	}, [isFormOpen]);
 
 	return (
 		<>
-			<ArrowButton isOpen={state} onClick={handleAction} />
+			<ArrowButton isOpen={isFormOpen} onClick={handleAction} />
 			<aside
 				ref={asideRef}
 				className={clsx(
 					styles.container,
-					state === true ? styles.container_open : undefined
+					isFormOpen === true ? styles.container_open : undefined
 				)}>
 				<form
 					className={styles.form}
